@@ -67,11 +67,10 @@ Preprocess `X_test` and `y_test` appropriately in order to evaluate the performa
 
 Before looking at the text below, try to remember: why is a train-test split the *first* step in a machine learning process?
 
-.
+---
 
-.
-
-.
+<details>
+    <summary style="cursor: pointer"><b>Answer (click to reveal)</b></summary>
 
 A machine learning (predictive) workflow fundamentally emphasizes creating *a model that will perform well on unseen data*. We will hold out a subset of our original data as the "test" set that will stand in for truly unseen data that the model will encounter in the future.
 
@@ -79,6 +78,9 @@ We make this separation as the first step for two reasons:
 
 1. Most importantly, we are avoiding *leakage* of information from the test set into the training set. Leakage can lead to inflated metrics, since the model has information about the "unseen" data that it won't have about real unseen data. This is why we always want to fit our transformers and models on the training data only, not the full dataset.
 2. Also, we want to make sure the code we have written will actually work on unseen data. If we are able to transform our test data and evaluate it with our final model, that's a good sign that the same process will work for future data as well.
+    
+</details>
+
 
 ### Loading the Data
 
@@ -264,29 +266,31 @@ Referring back to the chart above, both errors mean that on average we would exp
 
 Are we overfitting? Underfitting?
 
-.
+---
 
-.
-
-.
+<details>
+    <summary style="cursor: pointer"><b>Answer (click to reveal)</b></summary>
 
 The RMSE values for the training data and test data are fairly close to each other and the validation score is actually slightly better than the training score, so we can assume that we are not overfitting.
 
 It seems like our model has some room for improvement, but without further investigation it's impossible to know whether we are underfitting, or there is just irreducible error present. Maybe we are simply missing the features we would need to reduce error. (For example, we don't know anything about the diets of these study participants, and we know that diet can influence blood pressure.) But it's also possible that there is some reducible error, meaning we are currently underfitting.
 
 In the next step, we'll assume we *are* underfitting, and will attempt to reduce that underfitting by applying some polynomial features transformations to the data.
+    
+</details>
 
 ## 3. Use `PolynomialFeatures` to Reduce Underfitting
 
 Comprehension check: does "underfitting" mean we have high *bias*, or high *variance*?
 
-.
+---
 
-.
-
-.
+<details>
+    <summary style="cursor: pointer"><b>Answer (click to reveal)</b></summary>
 
 Underfitting means high bias. While it's possible that your model will have both high bias and high variance at the same time, in general underfitting means that there is additional information in the data that your model currently isn't picking up on, so you are getting higher error metrics than necessary.
+    
+</details>
 
 In some model algorithms (e.g. k-nearest neighbors) there are hyperparameters we can adjust so that the model is more flexible and can pick up on additional information in the data. In this case, since we are using linear regression, let's instead perform some feature engineering with `PolynomialFeatures`.
 
@@ -396,15 +400,16 @@ print("Validation RMSE:", poly_cv_rmse)
 
 So, what does this mean about the result of our polynomial features transformation? What was the impact on bias (underfitting)? What was the impact on variance (overfitting)?
 
-.
+---
 
-.
-
-.
+<details>
+    <summary style="cursor: pointer"><b>Answer (click to reveal)</b></summary>
 
 The polynomial features transformation did successfully reduce bias (reduce underfitting). We can tell because the RMSE decreased on the training dataset. However, it also increased variance (increased overfitting). We can tell because the RMSE increased on the validation dataset compared to the train dataset.
 
 Essentially this means that the polynomial features transformation gave our model the ability to pick up on more information from the training dataset, but some of that information was actually "noise" and not information that was useful for making predictions on unseen data.
+    
+</details>
 
 In the cell below, we plot the train vs. validation RMSE across various different degrees of `PolynomialFeatures`:
 
@@ -589,15 +594,16 @@ print("Validation RMSE:", ridge_cv_rmse)
 
 Did we successfully reduce overfitting? Which model is the best model so far?
 
-.
+---
 
-.
-
-.
+<details>
+    <summary style="cursor: pointer"><b>Answer (click to reveal)</b></summary>
 
 Compared to the model with the polynomial transformation, yes, we successfully reduced overfitting. We can tell because the gap between the train and validation RMSE got a lot smaller.
 
 At this point, our best model is actually still the baseline model. Even though we have a lower RMSE for the training data with both the model with polynomial transformation and the model with regularization added, the validation RMSE was still lowest for the baseline model.
+    
+</details>
 
 Let's try adding stronger regularization penalties, to see if we can reduce the overfitting a bit further while still keeping the improvements to underfitting that we got from the polynomial features transformation.
 
@@ -691,7 +697,7 @@ print("Validation RMSE:", final_cv_rmse)
 
 While we have already labeled a model as `final_model` above, make sure you understand why: this is the model with the best (lowest) validation RMSE. We also improved the train RMSE somewhat as well, meaning that our modeling strategy has actually reduced both underfitting and overfitting!
 
-The impact of the changes made so far have been minimal, which makes sense given our business context. We are trying to predict blood pressure based on proxy measurements that leave out a lot of important information! But we still did see some improvement over the basline by applying polynomial feature transformation and regularization.
+The impact of the changes made so far has been minimal, which makes sense given our business context. We are trying to predict blood pressure based on proxy measurements that leave out a lot of important information! But we still did see some improvement over the baseline by applying polynomial feature transformation and regularization.
 
 ## 5. Evaluate a Final Model on the Test Set
 
